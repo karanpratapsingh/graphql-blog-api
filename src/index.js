@@ -3,7 +3,7 @@ import uuidv4 from 'uuid/v4';
 // Scalar types - String, Boolean, Int, Float, ID
 
 // Demo user data
-const users = [{
+let users = [{
     id: '1',
     name: 'Andrew',
     email: 'andrew@example.com',
@@ -18,7 +18,7 @@ const users = [{
     email: 'mike@example.com'
 }]
 
-const posts = [{
+let posts = [{
     id: '10',
     title: 'GraphQL 101',
     body: 'This is how to use GraphQL...',
@@ -38,7 +38,7 @@ const posts = [{
     author: '2'
 }]
 
-const comments = [{
+let comments = [{
     id: '102',
     text: 'This worked well for me. Thanks!',
     author: '3',
@@ -59,67 +59,6 @@ const comments = [{
     author: '1',
     post: '12'
 }]
-
-// Type definitions (schema)
-const typeDefs = `
-    type Query {
-        users(query: String): [User!]!
-        posts(query: String): [Post!]!
-        comments: [Comment!]!
-        me: User!
-        post: Post!
-    }
-
-    type Mutation {
-        createUser(data: CreateUserInput): User!
-        createPost(data: CreatePostInput): Post!
-        createComment(data: CreateCommentInput): Comment!
-    }
-
-    input CreateUserInput {
-        name: String!
-        email: String!
-        age: Int
-    }
-
-    input CreatePostInput {
-        title: String!
-        body: String!
-        published: Boolean!
-        author: ID!
-    }
-
-    input CreateCommentInput {
-        text: String!
-        author: ID!
-        post: ID!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        age: Int
-        posts: [Post!]!
-        comments: [Comment!]!
-    }
-
-    type Post {
-        id: ID!
-        title: String!
-        body: String!
-        published: Boolean!
-        author: User!
-        comments: [Comment!]!
-    }
-
-    type Comment {
-        id: ID!
-        text: String!
-        author: User!
-        post: Post!
-    }
-`
 
 // Resolvers
 const resolvers = {
@@ -179,6 +118,27 @@ const resolvers = {
 
             return user;
         },
+        deleteUser: (parent, { id }, ctx, info) => {
+
+            const userIndex = users.findIndex(user => user.id === id);
+
+            if (userIndex === -1) throw new Error('User not found');
+
+            const deletedUsers = users.slice(userIndex, 1);
+
+            posts = posts.filter(post => {
+
+                const match = post.author === id;
+
+                if (match) comments = comments.filter(comment => comment.post !== post.id);
+
+                return !match;
+            });
+
+            comments = comments.filter(comment => comment.author !== id);
+
+            return deletedUsers[0];
+        },
         createPost: (parent, args, ctx, info) => {
 
             let { title, body, published, author } = args.data;
@@ -196,6 +156,18 @@ const resolvers = {
             posts.push(user);
 
             return post;
+        },
+        deletePost: (parent, { id }, ctx, info) => {
+
+            const postIndex = posts.findIndex(post => post.id === id);
+
+            if (postIndex === -1) throw new Error('Post does not exist');
+
+            const deletedPost = posts.slice(postIndex, 1);
+
+            comments = comments.filter(comment => comment.post !== id);
+
+            return deletedPost[0];
         },
         createComment: (parent, args, ctx, info) => {
 
@@ -215,6 +187,15 @@ const resolvers = {
             comments.push(comment);
 
             return comment;
+        }, 
+        deleteComment: (parent, {id}, ctx, info) => {
+
+            const commentIndex = comments.findIndex(comment => comment.id === id);
+            if (commentIndex === -1) throw new Error('Comment does not exist');
+
+            const deletedComment = comments.slice(commentIndex, 1);
+
+            return deletedComment[0];
         }
     },
     Post: {
@@ -246,7 +227,7 @@ const resolvers = {
 }
 
 const server = new GraphQLServer({
-    typeDefs,
+    typeDefs: './src/schema.graphql',
     resolvers
 })
 
