@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga'
-
+import uuidv4 from 'uuid/v4';
 // Scalar types - String, Boolean, Int, Float, ID
 
 // Demo user data
@@ -34,7 +34,7 @@ const posts = [{
     id: '12',
     title: 'Programming Music',
     body: '',
-    published: false,
+    published: true,
     author: '2'
 }]
 
@@ -68,6 +68,12 @@ const typeDefs = `
         comments: [Comment!]!
         me: User!
         post: Post!
+    }
+
+    type Mutation {
+        createUser(name: String!, email: String!, age: Int): User!
+        createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+        createComment(text: String!, author: ID!, post: ID!): Comment!
     }
 
     type User {
@@ -132,6 +138,59 @@ const resolvers = {
                 body: '',
                 published: false
             }
+        }
+    },
+    Mutation: {
+
+        createUser: (parent, { name, email, age }, ctx, info) => {
+
+            const emailTaken = users.some(user => user.email === email);
+
+            if (emailTaken) throw new Error('Email Taken');
+
+            const user = {
+
+                id: uuidv4(),
+                name, email, age
+            };
+
+            users.push(user);
+
+            return user;
+        },
+        createPost: (parent, { title, body, published, author }, ctx, info) => {
+
+            const userExists = users.some(user => user.id === author);
+
+            if (userExists) throw new Error('User not found');
+
+            const post = {
+
+                id: uuidv4(),
+                title, body, published, author
+            };
+
+            posts.push(user);
+
+            return post;
+        },
+        createComment: (parent, { text, author, post }, ctx, info) => {
+
+            const userExists = users.some(user => user.id === author);
+
+
+            const postExist = posts.some(post =>  post.id === post && post.published);
+
+            if(!userExists || !postExist) throw new Error('Unable to find user and post');
+
+            const comment = {
+                id: uuidv4(),
+                text, author, post
+            };
+
+            comments.push(comment);
+
+            return comment;
         }
     },
     Post: {
