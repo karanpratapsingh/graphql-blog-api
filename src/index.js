@@ -71,9 +71,28 @@ const typeDefs = `
     }
 
     type Mutation {
-        createUser(name: String!, email: String!, age: Int): User!
-        createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
-        createComment(text: String!, author: ID!, post: ID!): Comment!
+        createUser(data: CreateUserInput): User!
+        createPost(data: CreatePostInput): Post!
+        createComment(data: CreateCommentInput): Comment!
+    }
+
+    input CreateUserInput {
+        name: String!
+        email: String!
+        age: Int
+    }
+
+    input CreatePostInput {
+        title: String!
+        body: String!
+        published: Boolean!
+        author: ID!
+    }
+
+    input CreateCommentInput {
+        text: String!
+        author: ID!
+        post: ID!
     }
 
     type User {
@@ -142,7 +161,9 @@ const resolvers = {
     },
     Mutation: {
 
-        createUser: (parent, { name, email, age }, ctx, info) => {
+        createUser: (parent, args, ctx, info) => {
+
+            let { name, email, age } = args.data;
 
             const emailTaken = users.some(user => user.email === email);
 
@@ -158,7 +179,9 @@ const resolvers = {
 
             return user;
         },
-        createPost: (parent, { title, body, published, author }, ctx, info) => {
+        createPost: (parent, args, ctx, info) => {
+
+            let { title, body, published, author } = args.data;
 
             const userExists = users.some(user => user.id === author);
 
@@ -174,14 +197,15 @@ const resolvers = {
 
             return post;
         },
-        createComment: (parent, { text, author, post }, ctx, info) => {
+        createComment: (parent, args, ctx, info) => {
+
+            let { text, author, post } = args.data;
 
             const userExists = users.some(user => user.id === author);
 
+            const postExist = posts.some(post => post.id === post && post.published);
 
-            const postExist = posts.some(post =>  post.id === post && post.published);
-
-            if(!userExists || !postExist) throw new Error('Unable to find user and post');
+            if (!userExists || !postExist) throw new Error('Unable to find user and post');
 
             const comment = {
                 id: uuidv4(),
