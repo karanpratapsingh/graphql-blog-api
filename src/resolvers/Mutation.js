@@ -56,7 +56,6 @@ const Mutation = {
         }
 
         if (typeof name === 'string') user.name = name;
-
         if (typeof age !== 'undefined') user.age = age;
 
         return user;
@@ -91,6 +90,18 @@ const Mutation = {
 
         return deletedPost[0];
     },
+    updatePost: (parent, { id, data: { title, body, published } }, { db: { posts } }, info) => {
+
+        const post = posts.find(post => post.id === id);
+
+        if (!post) throw new Error('Post not found');
+
+        if (typeof title === 'string') post.title = title;
+        if (typeof body === 'string') post.body = body;
+        if (typeof published === 'boolean') post.published = published;
+
+        return post;
+    },
     createComment: (parent, args, { db: { users, posts, comments } }, info) => {
 
         let { text, author, post } = args.data;
@@ -118,6 +129,16 @@ const Mutation = {
         const deletedComment = comments.slice(commentIndex, 1);
 
         return deletedComment[0];
+    },
+    updateComment: (parent, { id, data: { text } }, { db: { comments } }, info) => {
+        
+        const comment = comments.find(comment => comment.id === id);
+
+        if (!comment) throw new Error('Comment not found');
+
+        if (typeof text === 'string') comment.text = text;
+
+        return comment;
     }
 };
 
