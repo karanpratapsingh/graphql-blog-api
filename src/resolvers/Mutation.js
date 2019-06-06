@@ -40,6 +40,27 @@ const Mutation = {
 
         return deletedUsers[0];
     },
+    updateUser: (parent, { id, data: { email, name, age } }, { db: { users } }, info) => {
+
+        const user = users.find(user => user.id === id);
+
+        if (!user) throw new Error('User not found');
+
+        if (typeof email === 'string') {
+
+            const emailTaken = users.some(user => user.email === email);
+
+            if (emailTaken) throw new Error('Email taken');
+
+            user.email = email;
+        }
+
+        if (typeof name === 'string') user.name = name;
+
+        if (typeof age !== 'undefined') user.age = age;
+
+        return user;
+    },
     createPost: (parent, args, { db: { users, posts } }, info) => {
 
         let { title, body, published, author } = args.data;
