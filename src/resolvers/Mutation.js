@@ -102,7 +102,7 @@ const Mutation = {
 
         return post;
     },
-    createComment: (parent, args, { db: { users, posts, comments } }, info) => {
+    createComment: (parent, args, { db: { users, posts, comments, pubsub } }, info) => {
 
         let { text, author, post } = args.data;
 
@@ -118,6 +118,7 @@ const Mutation = {
         };
 
         comments.push(comment);
+        pubsub.publish(`comment ${post}`, { comment });
 
         return comment;
     },
@@ -131,7 +132,7 @@ const Mutation = {
         return deletedComment[0];
     },
     updateComment: (parent, { id, data: { text } }, { db: { comments } }, info) => {
-        
+
         const comment = comments.find(comment => comment.id === id);
 
         if (!comment) throw new Error('Comment not found');
