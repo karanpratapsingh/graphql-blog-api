@@ -45,7 +45,7 @@ const comments = [{
     post: '11'
 }, {
     id: '104',
-    text: 'This did no work.',
+    text: 'This did not work.',
     author: '2',
     post: '12'
 }, {
