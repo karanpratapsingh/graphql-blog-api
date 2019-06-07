@@ -60,7 +60,7 @@ const Mutation = {
 
         return user;
     },
-    createPost: (parent, args, { db: { users, posts } }, info) => {
+    createPost: (parent, args, { db: { users, posts, pubsub } }, info) => {
 
         let { title, body, published, author } = args.data;
 
@@ -75,6 +75,8 @@ const Mutation = {
         };
 
         posts.push(user);
+
+        if (post.published) pubsub.publish('post', { post });
 
         return post;
     },

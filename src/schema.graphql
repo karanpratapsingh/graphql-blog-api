@@ -21,7 +21,7 @@ type Mutation {
 }
 
 type Subscription {
-  count: Int!
+  post: Post!
   comment(postId: ID!): Comment!
 }
 
@@ -30,7 +30,7 @@ input CreateUserInput {
   email: String!
   age: Int
 }
- 
+
 input UpdateUserInput {
   name: String
   email: String
