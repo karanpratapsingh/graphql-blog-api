@@ -5,45 +5,47 @@ const prisma = new Prisma({
     endpoint: 'http://localhost:4466'
 });
 
-const createPostForUser = async (authorId, data) => {
+export { prisma as default };
 
-    const userExists = await prisma.exists.User({ id: authorId });
+// const createPostForUser = async (authorId, data) => {
 
-    if (!userExists) throw new Error('User not found');
+//     const userExists = await prisma.exists.User({ id: authorId });
 
-    const post = await prisma.mutation.createPost({
-        data: {
-            ...data,
-            author: {
-                connect: {
-                    id: authorId
-                }
-            }
-        }
-    }`{ id }`);
+//     if (!userExists) throw new Error('User not found');
 
-    const user = await prisma.query.user({
-        where: {
-            id: authorId
-        }
-    }, '{ author { id name email posts { id title published } } }');
+//     const post = await prisma.mutation.createPost({
+//         data: {
+//             ...data,
+//             author: {
+//                 connect: {
+//                     id: authorId
+//                 }
+//             }
+//         }
+//     }`{ id }`);
 
-    return post.author;
-};
+//     const user = await prisma.query.user({
+//         where: {
+//             id: authorId
+//         }
+//     }, '{ author { id name email posts { id title published } } }');
 
-const updatePostForUser = async (postId, data) => {
+//     return post.author;
+// };
 
-    const postExists = await prisma.exists.Post({ id: postId });
+// const updatePostForUser = async (postId, data) => {
 
-    if (!postExists) throw new Error('Post not found');
+//     const postExists = await prisma.exists.Post({ id: postId });
 
-    const post = await prisma.mutation.updatePost({
-        where: {
-            id: postId
-        },
-        data
-    }, `{ author { id name email posts { id title published } } }`);
+//     if (!postExists) throw new Error('Post not found');
 
-    return post.author;
-};
+//     const post = await prisma.mutation.updatePost({
+//         where: {
+//             id: postId
+//         },
+//         data
+//     }, `{ author { id name email posts { id title published } } }`);
+
+//     return post.author;
+// };
 
