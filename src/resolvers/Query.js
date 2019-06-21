@@ -31,8 +31,8 @@ const Query = {
 
         return prisma.query.posts(null, info);
     },
-    comments: (parent, args, { db: { comments } }, info) => {
-        return comments;
+    comments: (parent, args, { prisma }, info) => {
+        return prisma.query.comments(null, info);
     },
     me: () => {
         return {
