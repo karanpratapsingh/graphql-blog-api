@@ -1,7 +1,10 @@
-import uuidv4 from 'uuid/v4';
 
 const Mutation = {
     createUser: async (parent, args, { prisma }, info) => {
+
+        if (args.data.password < 8) {
+            throw new Error('Password must be 8 characters or long');
+        }
 
         return prisma.mutation.createUser({ data: args.data }, info);
     },
