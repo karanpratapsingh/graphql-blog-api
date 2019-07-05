@@ -1,5 +1,4 @@
 import { GraphQLServer, PubSub } from 'graphql-yoga'
-import db from './db';
 import prisma from './prisma';
 import { resolvers, fragmentReplacements } from './resolvers';
 
@@ -9,7 +8,7 @@ const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     context: request => {
-        return { db, pubsub, prisma, request }
+        return { pubsub, prisma, request }
     },
     fragmentReplacements
 });
