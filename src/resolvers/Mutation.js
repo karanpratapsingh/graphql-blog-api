@@ -20,7 +20,9 @@ const Mutation = {
 
         return {
             user,
-            token: jwt.sign({ userId: user.id }, 'thisisasecret')
+            token: jwt.sign({ userId: user.id }, 'thisisasecret', {
+                expiresIn: '7 days'
+            })
         };
     },
     login: async (parent, args, { prisma }, info) => {
@@ -39,7 +41,9 @@ const Mutation = {
 
         return {
             user,
-            token: jwt.sign(user.id, 'thisisasecret')
+            token: jwt.sign(user.id, 'thisisasecret', {
+                expiresIn: '7 days'
+            })
         }
 
     },
