@@ -1,5 +1,11 @@
 ## GraphQL Blog API:
 
+<div>
+    <img style="margin-left: 40px" src="https://user-images.githubusercontent.com/29705703/60788211-c9302080-a179-11e9-960a-9edfb10f8911.png" />
+    <img style="margin-left: 40px" src="https://user-images.githubusercontent.com/29705703/60788212-c9302080-a179-11e9-929a-68492331aecb.png" />
+    <img style="margin-left: 20px"  src="https://user-images.githubusercontent.com/29705703/60788601-b833df00-a17a-11e9-95fa-9c3b635cf3ea.png" />
+</div>
+
 ### A GraphQl API like Medium.com to query, mutate and subscribe articles along with comments and various authentication features.
 
 ## Technologies used:
@@ -12,9 +18,3 @@
     <li>JWT Auth</li>
     <li>Postgres/Mongo DB</li>
 </ul>
-
- <br />
- <br />
- <br />
-
-![GraphQL-logo](https://user-images.githubusercontent.com/29705703/60787434-676eb700-a177-11e9-93d3-dcb75881240d.png) ![Nodejs-logo](https://user-images.githubusercontent.com/29705703/60787433-66d62080-a177-11e9-84bd-37c47e932b61.png) ![heroku-logo](https://user-images.githubusercontent.com/29705703/60787571-dd731e00-a177-11e9-996d-46eea41c17f5.png)
